@@ -19,7 +19,12 @@ export class AuthService {
 		private readonly jwtService: JwtService
 	) {}
 	async login(dto: AuthDto) {
-		return this.validateUser(dto)
+		const user = await this.validateUser(dto)
+		const tokens = await this.issueTokenPair(String(user._id))
+		return {
+			user: this.returnUserFields(user),
+			...tokens,
+		}
 	}
 	async validateUser(dto: AuthDto): Promise<UserModel> {
 		const user = await this.UserModel.findOne({ email: dto.email })
@@ -41,7 +46,12 @@ export class AuthService {
 			email: dto.email,
 			password: await hash(dto.password, salt),
 		})
-		return newUser.save()
+		const tokens = await this.issueTokenPair(String(newUser._id))
+		await newUser.save()
+		return {
+			user: this.returnUserFields(newUser),
+			...tokens,
+		}
 	}
 
 	async issueTokenPair(userId: string) {
@@ -55,5 +65,13 @@ export class AuthService {
 		})
 
 		return { refreshToken, accessToken }
+	}
+
+	returnUserFields(user: UserModel) {
+		return {
+			_id: user._id,
+			email: user.email,
+			isAdmin: user.isAdmin,
+		}
 	}
 }
