@@ -1,6 +1,5 @@
 import { ModelType } from '@typegoose/typegoose/lib/types'
 import { UserModel } from 'src/user/user.model'
-import { UserModel } from './../../user/user.model'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { InjectModel } from 'nestjs-typegoose'

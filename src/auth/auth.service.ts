@@ -47,6 +47,6 @@ export class AuthService {
 	async issueTokenPair(userId: string) {
 		const data = { _id: userId }
 
-		const refreshToken
+		const refreshToken = await
 	}
 }
