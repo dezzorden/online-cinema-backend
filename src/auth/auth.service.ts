@@ -1,3 +1,4 @@
+import { RefreshTokenDto } from './dto/refreshToken.dto'
 import { AuthDto } from './dto/auth.dto'
 import {
 	BadRequestException,
@@ -9,18 +10,18 @@ import { hash, genSalt, compare } from 'bcryptjs'
 
 import { InjectModel } from 'nestjs-typegoose'
 import { UserModel } from 'src/user/user.model'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class AuthService {
 	constructor(
-		@InjectModel(UserModel) private readonly UserModel: ModelType<UserModel>
+		@InjectModel(UserModel) private readonly UserModel: ModelType<UserModel>,
+		private readonly jwtService: JwtService
 	) {}
 	async login(dto: AuthDto) {
 		return this.validateUser(dto)
 	}
 	async validateUser(dto: AuthDto): Promise<UserModel> {
-		console.log(dto)
-
 		const user = await this.UserModel.findOne({ email: dto.email })
 		if (!user) throw new UnauthorizedException('Пользователь не найден')
 
@@ -41,5 +42,11 @@ export class AuthService {
 			password: await hash(dto.password, salt),
 		})
 		return newUser.save()
+	}
+
+	async issueTokenPair(userId: string) {
+		const data = { _id: userId }
+
+		const refreshToken
 	}
 }
