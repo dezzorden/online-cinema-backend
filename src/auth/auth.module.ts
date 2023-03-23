@@ -1,3 +1,4 @@
+import { JwtStrategy } from './strategies/jwt.strategy'
 import { getJWTConfig } from './../config/jwt.config'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { UserModel } from './../user/user.model'
@@ -26,6 +27,6 @@ import { JwtModule } from '@nestjs/jwt'
 		}),
 	],
 
-	providers: [AuthService],
+	providers: [AuthService, JwtStrategy],
 })
 export class AuthModule {}
